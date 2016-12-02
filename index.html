@@ -1,1 +1,83 @@
-Hello World
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>tal avissar</title>
+
+    <style>
+      html, body {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+      }
+
+      body {
+        background-image: url("tal.jpg");
+        background-position: center;
+        background-size: 100% auto;
+      }
+
+      img {
+        max-width: 100%;
+        vertical-align: middle;
+      }
+
+      #icons {
+        float: right;
+      }
+
+      #twitter {
+        margin-right: 50px;
+      }
+
+      #container {
+        position: absolute;
+        top: 50%;
+        left: 100px;
+        right: 100px;
+        margin-top: -100px;
+        height: 200px;
+        line-height: 200px;
+      }
+
+      h1 {
+        float: left;
+        margin: 0;
+      }
+
+      @media (max-width: 1070px) {
+        #container {
+          left: 50px;
+          right: 50px;
+        }
+
+        img {
+          display: block;
+          margin: 0 auto;
+          margin-bottom: 50px;
+        }
+
+        h1, #icons {
+          float: none;
+        }
+
+        #twitter {
+          margin: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <audio loop autoplay src="music.mp3" volume="1"></audio>
+
+    <div id="container">
+      <h1><img alt="sebmck" src="heading.png" width="500"></h1>
+
+      <div id="icons">
+        <a href="http://twitter.com/talaviss" id="twitter"><img alt="Twitter" width="200" src="twitter.png"></a>
+        <a href="http://github.com/talaviss" id="github"><img alt="GitHub" width="200" src="github.png"></a>
+      </div>
+    </div>
+  </body>
+</html>
+
