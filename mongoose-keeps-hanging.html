@@ -82,78 +82,32 @@ during development.</p>
 </ul>
 <h2 id="webpack-entry-file">webpack entry file</h2>
 <p></p>
-<pre><code class="lang-js">module.exports = function (config) {
-  config.set({
-    browsers: [ &#39;Chrome&#39; ],
-    // karma only needs to know about the test bundle
-    files: [
-      &#39;tests.bundle.js&#39;
-    ],
-    frameworks: [ &#39;chai&#39;, &#39;mocha&#39; ],
-    plugins: [
-      &#39;karma-chrome-launcher&#39;,
-      &#39;karma-chai&#39;,
-      &#39;karma-mocha&#39;,
-      &#39;karma-sourcemap-loader&#39;,
-      &#39;karma-webpack&#39;,
-    ],
-    // run the bundle through the webpack and sourcemap plugins
-    preprocessors: {
-      &#39;tests.bundle.js&#39;: [ &#39;webpack&#39;, &#39;sourcemap&#39; ]
-    },
-    reporters: [ &#39;dots&#39; ],
-    singleRun: true,
-    // webpack config object
-    webpack: {
-      devtool: &#39;inline-source-map&#39;,
-      module: {
-        loaders: [
-          {
-            exclude: /node_modules/,
-            loader: &#39;babel-loader,
-            test: /\.jsx?$/
-          }
-        ],
-      }
-    },
-    webpackMiddleware: {
-      noInfo: true,
-    }
-  });
-};</code></pre>
-<p>Rather than duplicating your webpack config, you can <code>require</code> it in the Karma
-config file and override the <code>devtool</code> value to get sourcemaps working.</p>
-<pre><code class="lang-js">var webpackConfig = require(&#39;./webpack.config&#39;);
-webpackConfig.devtool = &#39;inline-source-map&#39;;
 
-module.exports = function (config) {
-  config.set({
-    ...
-    webpack: webpackConfig
-  });
-};</code></pre>
-<p>That’s all you need to do to configure Karma to use webpack to load your JSX,
-ES6 React components.</p>
+<p>We have encountered this issue in all our environments. (dev/intg/stg/prod)
+At NI we have a very large NodeJS application which is backed up by a MongoDB servers which runs in a cluster of replica set.
+This problem happens when our mongo db goes down.
+This can be caused by various failures like: system administrator mistake or server shutdown, power interrupt etc …
+Connection failures and retries with mongoDB are a known issue that causes confusion among developers how exactly the mongo db driver works when it comes to socket timeouts and retries.
+If for some reason the database/replica set goes down then the application starts to hang.
+This issue is caused by the internal implementation of Mongoose (version 4.7.2) which wraps the mongo db driver. (version 2.1.12)
+There are couple of settings that the user needs to be aware of that are causing the hang:
+autoReconnect setting
+this setting should be set to false in the db section of the config options
+2. bufferMaxEntries setting
+this setting should be set to 0 in the db section of the config options
+bufferCommands setting
+This setting controls the buffering at the schema level and should be set at the schema level only when running in replicaset mode
+Each of this setting has in-depth knowledge concerning how to set it and the pros and cons of each setting.
+According to Mongo DB the best practice recommend to create one connection per db and to keep your connection alive and open along as your application runs.
+For more information about connection failures please read this from mongoDB site.</p>
 
-    </div>
-    <div class="Article-interactions">
-      
-      <a class="Article-action" title="Reply on Twitter" href="https://twitter.com/intent/tweet?in_reply_to=600357785503539200">
-        <span class="Icon Icon--reply"></span><span class="u-isHiddenVisually">Reply on Twitter</span>
-      </a>
-      <a class="Article-action" title="Retweet on Twitter" href="https://twitter.com/intent/retweet?tweet_id=600357785503539200">
-        <span class="Icon Icon--retweet"></span><span class="u-isHiddenVisually">Retweet on Twitter</span>
-      </a>
-      <a class="Article-action" title="Favorite on Twitter" href="https://twitter.com/intent/favorite?tweet_id=600357785503539200">
-        <span class="Icon Icon--favorite"></span><span class="u-isHiddenVisually">Favorite on Twitter</span>
-      </a>
       
       <div class="Article-tweet">
         
 <a class="twitter-share-button"
    rel="external nofollow"
    title="Share this on Twitter"
-   href="http://twitter.com/share?text=How to test React components using Karma and webpack&amp;url=http%3A%2F%2Fnicolasgallagher.com%2Fhow-to-test-react-components-karma-webpack%2F&amp;counturl=http%3A%2F%2Fnicolasgallagher.com%2Fhow-to-test-react-components-karma-webpack%2F&amp;via=necolas&amp;count=none&amp;size=medium"
+   href="http://twitter.com/share?text==Mongoose keeps hanging&amp;url=http%3A%2F%2Ftalavissar.com%2Fmongoose-keeps-hanging%2F&amp;counturl=http%3A%2F%talavissar.com%2Fhow-to-test-react-components-karma-webpack%2F&amp;via=necolas&amp;count=none&amp;size=medium"
    target="_blank">Tweet</a>
 
       </div>
