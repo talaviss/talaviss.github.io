@@ -7,7 +7,6 @@
 
 <meta property="og:title" content="How to test React components using Karma and webpack – Nicolas Gallagher" />
 <meta property="og:description" content="One way to combine these popular tools to support unit testing">
-<meta property="og:image" content="http://www.gravatar.com/avatar/9eecfabc23fd999927fa7989a7eaff5f.png?v=2&amp;s=300" />
 <meta property="twitter:account_id" content="24974216">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="@necolas">
@@ -48,7 +47,7 @@
       <div class="Article-data">
         <time class="Article-timestamp Timestamp" datetime="2015-05-17">May 17, 2015</time>
       </div>
-      <h1 class="Article-title">How to test React components using Karma and webpack</h1>
+      <h1 class="Article-title">Mongooze</h1>
       
       <div class="HzLine"></div>
       
@@ -82,24 +81,7 @@ during development.</p>
 <li><a href="https://www.npmjs.com/package/webpack">webpack</a>: module bundler</li>
 </ul>
 <h2 id="webpack-entry-file">webpack entry file</h2>
-<p>If you use webpack-specific features in your modules (e.g., loaders, plugins)
-you will need to use webpack to build a test bundle. The fastest and simplest
-approach is to create a single, test-specific entry file.</p>
-<p>Create a file named <code>tests.bundle.js</code>. Within this file, you create a webpack
-<a href="https://github.com/webpack/docs/wiki/context">context</a> to match all the
-files that conform to a naming pattern – in this case <code>*.spec.js(x)</code>.</p>
-<pre><code class="lang-js">var context = require.context(&#39;.&#39;, true, /.+\.spec\.jsx?$/);
-context.keys().forEach(context);
-module.exports = context;</code></pre>
-<p>Next, you point Karma to this file.</p>
-<h2 id="karma-config">Karma config</h2>
-<p>Karma is configured using a <code>karma.conf.js</code> file. The browsers, plugins, and
-frameworks are specified in the standard way.</p>
-<p>Point Karma at the <code>tests.bundle.js</code> file, and run it through the relevant
-preprocessor plugins (see example below).</p>
-<p>The <code>karma-webpack</code> plugin relies on 2 custom properties of the Karma config:
-<code>webpack</code> and <code>webpackMiddleware</code>. The value of the former must be a webpack
-config object.</p>
+<p></p>
 <pre><code class="lang-js">module.exports = function (config) {
   config.set({
     browsers: [ &#39;Chrome&#39; ],
@@ -188,13 +170,13 @@ ES6 React components.</p>
 <footer class="Footer" role="contentinfo">
   <div class="Container">
     <div class="HzLine"></div>
-    <a class="twitter-follow-button" href="//twitter.com/necolas" data-show-count="false" data-lang="en" data-size="large">Follow @necolas</a>
+    <a class="twitter-follow-button" href="//twitter.com/talaviss" data-show-count="false" data-lang="en" data-size="large">Follow @talaviss</a>
     <p class="Footer-links">
       <a href="/about/">About</a>
       &middot;
-      <a href="//twitter.com/necolas">Twitter</a>
-      <a href="//vine.co/necolas">Vine</a>
-      <a href="//github.com/necolas">GitHub</a>
+      <a href="//twitter.com/talaviss">Twitter</a>
+      <a href="//medium.com/@talaviss">Medium</a>
+      <a href="//github.com/talaviss">GitHub</a>
     </p>
     <small class="Footer-legal">Copyright &#169; Tal Avissar.</small>
   </div>
