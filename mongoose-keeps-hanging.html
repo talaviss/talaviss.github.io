@@ -59,10 +59,10 @@
     <div class="Article-body">
 
 
-<p>We have encountered this issue in all our environments. (dev/intg/stg/prod)
-At NI we have a very large NodeJS application which is backed up by a MongoDB servers which runs in a cluster of replica set.
-This problem happens when our mongo db goes down.
-This can be caused by various failures like: system administrator mistake or server shutdown, power interrupt etc …
+<p>We have encountered this issue in all our environments. (dev/intg/stg/prod)</p>
+<p>At NI we have a very large NodeJS application which is backed up by a MongoDB servers which runs in a cluster of replica set.
+  This problem happens when our mongo db goes down.</p>
+<p>This can be caused by various failures like: system administrator mistake or server shutdown, power interrupt etc …
 Connection failures and retries with mongoDB are a known issue that causes confusion among developers how exactly the mongo db driver works when it comes to socket timeouts and retries.
 If for some reason the database/replica set goes down then the application starts to hang.
 This issue is caused by the internal implementation of Mongoose (version 4.7.2) which wraps the mongo db driver. (version 2.1.12)
