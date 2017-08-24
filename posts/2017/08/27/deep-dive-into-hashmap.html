@@ -60,7 +60,7 @@
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-48569937-1', 'auto');
+  ga('create', 'UA-88373349-1', 'auto');
   ga('set', 'anonymizeIp', true);
   ga('send', 'pageview');
 
@@ -81,10 +81,10 @@
             <a href="/contact/">Contact</a>
         </span>
         <span class="social-links hide">
-            <a href="http://feeds.feedburner.com/winterbe">RSS</a>
-            <a href="https://github.com/winterbe">GitHub</a>
-            <a href="https://plus.google.com/105973259367211176218/" rel="author">Google+</a>
-            <a href="https://twitter.com/winterbe_">Twitter</a>
+            <a href="http://feeds.feedburner.com/talaviss">RSS</a>
+            <a href="https://github.com/talviss">GitHub</a>
+            <a href="https://plus.google.com/88373349/" rel="author">Google+</a>
+            <a href="https://twitter.com/talaviss">Twitter</a>
         </span>
         <a href="#" class="btn" data-toggle="follow">Follow</a>
     </div>
@@ -96,7 +96,7 @@
     <div class="content">
         <h1 class="page-title">Integrating React.js into Existing jQuery Web Applications</h1>
 
-<p class="page-subtitle" data-page-url="http://winterbe.com/posts/2015/08/24/integrate-reactjs-into-jquery-webapps/">
+<p class="page-subtitle" data-page-url="http://talaviss.com/posts/2017/08/24/integrate-reactjs-into-jquery-webapps/">
     <span class="post-date">August 24, 2015</span><br>
     <span class="share-count-total"></span>
 </p>
@@ -106,115 +106,8 @@
 </div>
 
 <div class="post">
-    <p>One of the great parts of <a href="http://facebook.github.io/react/">React.js</a> is the ease of integration into existing web projects. Many full-fledged JavaScript MVC frameworks like <a href="https://angularjs.org/">Angular.js</a> impose the architecture of your application code, thus making an integration into existing projects hard to impossible without rewriting entire parts of the frontend code.</p>
+    <p>Almost in every interview for Java position, and in every interview discussion these days one of the most popular questions is about the internals work of the hashmap and what is hashing</p>
 
-<p>In contrast React is barely more than the V in MVC. That makes it very simple to integrate into existing projects without revamping lots of code. You can easily try React for a particular feature, leaving the rest of your application code alone.</p>
-
-<p>I&#39;m working with React for a few month now in a traditional single-page-application. The application relies on server-side markup rendering and <a href="https://jquery.org/">jQuery</a>. Let me describe to you a few techniques I&#39;m using to integrate React in a <em>non-invasive</em> way.</p>
-
-<p>Let&#39;s assume we&#39;re working on an existing single-page-application with a static HTML5 layout consisting of some general elements like a header, footer, sidebar and a content container, holding the actual HTML of each individual page:</p>
-<figure class="highlight"><pre><code class="language-html" data-lang="html">&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;en&quot;&gt;
-&lt;head&gt;
-    &lt;meta charset=&quot;UTF-8&quot;&gt;
-    &lt;title&gt;My Existing Webapp&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-&lt;header&gt;&lt;/header&gt;
-&lt;aside&gt;&lt;/aside&gt;
-&lt;main id=&quot;content&quot;&gt;&lt;/div&gt;
-&lt;footer&gt;&lt;/footer&gt;
-&lt;script src=&quot;jquery.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;react.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;app.js&quot;&gt;&lt;/script&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-</code></pre></figure>
-<p>For every internal application link we call an appriopriate controller on the server which renders the page. We could use a simple routing function to handle the ajax calls to the server and then replace the html of the main content container with the server-rendered markup. Before the actual html will be replaced, we trigger a custom jQuery event <code>content-will-change</code>, who&#39;s purpose will be revealed later in this article.</p>
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">function loadContent(url) {
-    $.ajax({
-        url: url
-    }).done(function(html)) {
-        $(&#39;#content&#39;)
-            .trigger({type: &#39;content-will-change&#39;})
-            .html(html);
-    }
-}
-</code></pre></figure>
-<p>Instead of rendering the full HTML page on the server with an arbitrary template engine, we now want to utilize React.js to render the html in the browser for a particular page. The tricky part is how to integrate client-side react rendering without changing too much existing code like the routing function described above.</p>
-
-<p>Normally you would implement a REST controller on the server and let the client handle all the rendering and routing between views. But since most parts of our existing application still rely on server-side rendering we would need to completely rewrite the routing function.</p>
-
-<p>Instead we just retain server-side rendering for the React view, but instead of rendering the whole html on the server we just render an empty container and the json data into a minimal html skeleton, so the client can do the rest of the work. Putting all the json data directly into the skeleton view saves us from performing additional ajax calls later on when rendering the react components on the client.</p>
-
-<p>In a Java webapp we could utilize <code>ObjectMapper</code> from the <a href="https://github.com/FasterXML/jackson">Jackson library</a> to transform arbitrary Java objects into json strings. For example if we want to render a react component showing a list of books, we use the method <code>writeValueAsString()</code> to transform the list of books into valid json:</p>
-<figure class="highlight"><pre><code class="language-java" data-lang="java">List&lt;Book&gt; books = ...;
-ObjectMapper objectMapper = new ObjectMapper();
-String jsonBooks = objectMapper.writeValueAsString(books);
-</code></pre></figure>
-<p>The server controller now returns the html skeleton consisting of an empty books container and a script block to render the react component into this container passing the dehydrated json data as a parameter to the render function:</p>
-<figure class="highlight"><pre><code class="language-html" data-lang="html">&lt;div id=&quot;books&quot;&gt;&lt;/div&gt;
-
-&lt;script&gt;
-    var books = ${jsonBooks};
-    renderBooks(books);
-&lt;/script&gt;
-</code></pre></figure>
-<p>When the routing function replaces the html on the site via <code>$(&#39;#content&#39;).html(html)</code> this script block gets evaluated, forcing React to render the component into the books container:</p>
-<figure class="highlight"><pre><code class="language-jsx" data-lang="jsx">class BookList extends React.Component {
-    render() {
-        return (
-            &lt;div className=&quot;books&quot;&gt;
-                Found {this.props.books.length} books
-            &lt;/div&gt;
-        );
-    }
-}
-
-function renderBooks(books) {
-    ReactContentRenderer.render(&lt;BookList books={books}/&gt;, $(&#39;#books&#39;));
-}
-</code></pre></figure>
-<blockquote>
-<p>The above code is written in <a href="https://github.com/lukehoban/es6features">EcmaScript 6</a> (aka ES2015) + JSX syntax. Although not all browsers support ES6 as of today, you can safely use ES6 in production by transpiling the code into valid ES5 with <a href="https://babeljs.io/">Babel.js</a>. Babel also compiles Reacts JSX syntax which makes it the perfect tool for React development.</p>
-</blockquote>
-
-<blockquote class="twitter-tweet tw-align-center" lang="en"><p lang="en" dir="ltr"><a href="http://t.co/smvc6o3sKe">http://t.co/smvc6o3sKe</a> is now compiled with <a href="https://twitter.com/babeljs">@babeljs</a> 🎉🎊✨</p>&mdash; Amjad Masad (@amasad) <a href="https://twitter.com/amasad/status/631251607422787584">August 11, 2015</a></blockquote>
-
-<p><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script></p>
-
-<p><br></p>
-
-<p>As you might already have noticed in the above code I don&#39;t use <code>React.render</code> to render the <code>&lt;BookList/&gt;</code> component. Instead I&#39;m using a utility wrapper called <code>ReactContentRenderer</code>. The purpose of this module is to automatically unmount all react components rendered into the content container before loading a new page. This is critical in traditional single-page-applications to prevent memory leaks since React keeps references to all mounted components until they get unmounted from the DOM.</p>
-<figure class="highlight"><pre><code class="language-javascript" data-lang="javascript">let nodes = [];
-
-const ReactContentRenderer = {
-    unmountAll() {
-        if (nodes.length === 0) {
-            return;
-        }
-        nodes.forEach(node =&gt; React.unmountComponentAtNode(node));
-        nodes = [];
-    },
-    render(element, container, callback) {
-        if (container instanceof jQuery) {
-            container = container.get(0);
-        }
-        React.render(element, container, callback);
-        nodes.push(container);
-    }
-};
-
-$(function () {
-    $(&#39;#content&#39;)
-        .on(&#39;content-will-change&#39;, ReactContentRenderer.unmountAll);
-});
-</code></pre></figure>
-<p><code>ReactContentRenderer</code> keeps a reference to all component nodes and listens on <code>content-will-change</code> events to unmount those components before the html of the content container gets replaced via <code>$(&#39;#content&#39;).html(html)</code>.</p>
-
-<p>If you don&#39;t unmount those components, React would never know that the underlying HTML does no longer exist. You can inspect all mounted components by using the <a href="https://github.com/facebook/react-devtools">React Dev Tools</a> (browser extension) to manually assure that obsolete components are already unmounted.</p>
-
-<p><br></p>
 
 <p>I hope you&#39;ve enjoyed this article. Don&#39;t hesitate to share your feedback with me on <a href="https://twitter.com/talaviss">Twitter</a> or use the comments below. You might also be interested in reading my article about <a href="/posts/2015/02/16/isomorphic-react-webapps-on-the-jvm/">how to render React components on Java servers</a> by utilizing the <a href="/posts/2014/04/05/java8-nashorn-tutorial/">Java 8 Nashorn engine</a>. You should also check out my <a href="https://github.com/talaviss/react-samples">React Samples</a> repository on <a href="https://github.com/winterbe">GitHub</a>, containing a bunch of client-side React examples.</p>
 
@@ -233,8 +126,8 @@ $(function () {
 
 <section class="author">
     <div class="avatar"></div>
-    Benjamin is Software Engineer, Full Stack Developer at <a href="http://pondus.de/en/homepage/">Pondus</a>, an excited runner and table foosball player.
-    Get in touch on <a href="https://twitter.com/talaviss">Twitter</a> and <a href="https://github.com/winterbe">GitHub</a>.
+    Tal is a Senior Software Engineer, Full Stack Developer at <a href="http://naturalint/">Natural Intelligence</a>.
+    Get in touch on <a href="https://twitter.com/talaviss">Twitter</a> and <a href="https://github.com/talaviss">GitHub</a>.
 </section>
 
 <h3 class="center">Read More</h3>
